@@ -41,6 +41,14 @@ public class WebSocketBridge implements WebBridge {
     }
 
     @Override
+    public void onNicknameSet(String clientId, String nickname) {
+        Map<String, String> payload = new HashMap<>();
+        payload.put("clientId", clientId);
+        payload.put("nickname", nickname);
+        messagingTemplate.convertAndSend("/topic/events", new DashboardEvent("NICKNAME_SET", payload));
+    }
+
+    @Override
     public void onMessage(String room, String senderId, String content) {
         Map<String, String> payload = new HashMap<>();
         payload.put("room", room);

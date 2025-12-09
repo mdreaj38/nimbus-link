@@ -38,4 +38,16 @@ public class AdminController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/clients")
+    public ResponseEntity<?> getClients() {
+        java.util.List<Map<String, String>> clients = new java.util.ArrayList<>();
+        for (ClientHandler client : subscriptionManager.getAllClients()) {
+            Map<String, String> clientInfo = new java.util.HashMap<>();
+            clientInfo.put("clientId", client.getClientId());
+            clientInfo.put("displayName", client.getDisplayName());
+            clients.add(clientInfo);
+        }
+        return ResponseEntity.ok(clients);
+    }
 }

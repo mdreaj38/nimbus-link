@@ -9,6 +9,8 @@ public interface WebBridge {
 
     void onRoomLeave(String clientId, String room);
 
+    void onNicknameSet(String clientId, String nickname);
+
     void onMessage(String room, String senderId, String content);
 
     void onLog(String message);

@@ -26,10 +26,16 @@ public class ClientHandler implements Runnable {
     @Getter
     private final String clientId;
 
+    private String nickname;
+
     public ClientHandler(Socket socket, SubscriptionManager subscriptionManager) {
         this.socket = socket;
         this.subscriptionManager = subscriptionManager;
         this.clientId = socket.getInetAddress().getHostAddress() + ":" + socket.getPort();
+    }
+
+    public String getDisplayName() {
+        return nickname != null ? nickname : clientId;
     }
 
     @Override
@@ -65,6 +71,16 @@ public class ClientHandler implements Runnable {
             case PING:
                 sendMessage(NbpMessage.ack("PONG"));
                 break;
+            case NICK:
+                String newNickname = message.getPayload().trim();
+                if (newNickname.isEmpty()) {
+                    sendMessage(NbpMessage.err("Nickname cannot be empty"));
+                } else {
+                    this.nickname = newNickname;
+                    subscriptionManager.onNicknameSet(this, newNickname);
+                    sendMessage(NbpMessage.ack("Nickname set to: " + newNickname));
+                }
+                break;
             case JOIN:
                 subscriptionManager.joinRoom(message.getPayload(), this);
                 sendMessage(NbpMessage.ack("Joined " + message.getPayload()));
@@ -81,7 +97,7 @@ public class ClientHandler implements Runnable {
                     String msgContent = parts[1];
                     // Broadcast to room
                     subscriptionManager.broadcastToRoom(room,
-                            new NbpMessage(NbpCommand.SEND, room + " " + clientId + ": " + msgContent), this);
+                            new NbpMessage(NbpCommand.SEND, room + " " + getDisplayName() + ": " + msgContent), this);
                 } else {
                     sendMessage(NbpMessage.err("Invalid SEND format. Usage: SEND <ROOM> <MESSAGE>"));
                 }
