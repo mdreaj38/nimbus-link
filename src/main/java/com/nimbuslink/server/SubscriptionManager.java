@@ -27,6 +27,11 @@ public class SubscriptionManager {
         webBridge.onLog("Client connected: " + client.getClientId());
     }
 
+    public void onNicknameSet(ClientHandler client, String nickname) {
+        webBridge.onNicknameSet(client.getClientId(), nickname);
+        webBridge.onLog(client.getClientId() + " set nickname to: " + nickname);
+    }
+
     public void removeClient(ClientHandler client) {
         allClients.remove(client);
         rooms.values().forEach(roomClients -> roomClients.remove(client));

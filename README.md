@@ -16,6 +16,7 @@ The NimbusLink Protocol (NBP) is a simple text-based line protocol.
 ### Commands
 
 - `PING`: Heartbeat check. Server responds with `ACK PONG`.
+- `NICK <nickname>`: Set your display name. Server responds with `ACK Nickname set to: <nickname>`.
 - `JOIN <room>`: Join a specific room/channel.
 - `LEAVE <room>`: Leave a room.
 - `SEND <room> <message>`: Send a message to a room.

@@ -106,6 +106,12 @@
             </div>
 
             <div class="card">
+                <h2>Connected Clients</h2>
+                <ul id="client-list">
+                </ul>
+            </div>
+
+            <div class="card">
                 <h2>Actions</h2>
                 <div style="margin-bottom: 10px;">
                     <input type="text" id="broadcast-msg" placeholder="Broadcast Message">
@@ -153,12 +159,16 @@
                 console.log("Event:", event);
                 if (event.type === 'CLIENT_CONNECT') {
                     updateClientCount(1);
+                    loadClients();
                 } else if (event.type === 'CLIENT_DISCONNECT') {
                     updateClientCount(-1);
+                    loadClients();
                 } else if (event.type === 'ROOM_JOIN') {
                     addRoom(event.data.room);
                 } else if (event.type === 'ROOM_LEAVE') {
                     // We might want to check if room is empty, but for now just UI update
+                } else if (event.type === 'NICKNAME_SET') {
+                    loadClients();
                 }
             }
 
@@ -222,7 +232,25 @@
                 });
             }
 
+            function loadClients() {
+                fetch('/api/admin/clients')
+                    .then(res => res.json())
+                    .then(clients => {
+                        var list = document.getElementById('client-list');
+                        list.innerHTML = '';
+                        clients.forEach(client => {
+                            var li = document.createElement('li');
+                            li.textContent = client.displayName;
+                            if (client.displayName !== client.clientId) {
+                                li.textContent += ' (' + client.clientId + ')';
+                            }
+                            list.appendChild(li);
+                        });
+                    });
+            }
+
             connect();
+            loadClients();
         </script>
     </body>
 

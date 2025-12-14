@@ -33,7 +33,7 @@ public class ConsoleClient {
                 }
             }).start();
 
-            System.out.println("Commands: JOIN <room>, SEND <room> <msg>, LEAVE <room>, PING, QUIT");
+            System.out.println("Commands: NICK <nickname>, JOIN <room>, SEND <room> <msg>, LEAVE <room>, PING, QUIT");
 
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
